@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { Planet } from '@/components/Planet'
+import { Star } from '@/components/Star'
 
 export default function ExplorePage() {
   const mountRef = useRef<HTMLDivElement | null>(null)
@@ -136,10 +137,15 @@ export default function ExplorePage() {
 
   return (
     <div ref={mountRef} className="h-screen w-screen bg-black overflow-hidden">
-      {scene &&
-        planets.map((planet) => (
-          <Planet key={planet.name} scene={scene} {...planet} emissive/>
-        ))}
+        
+        {scene && (
+            <>
+            <Star scene={scene} />
+            {planets.map((planet) => (
+              <Planet key={planet.name} scene={scene} {...planet} emissive />
+            ))}
+            </>
+        )}
     </div>
   )
 }
