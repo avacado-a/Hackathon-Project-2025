@@ -71,6 +71,7 @@ with mp_hands.Hands(
 
         
         panning = False
+        pan_just_released = False
         if len(hands) == 2:
             hand, hand2 = hands[0], hands[1]
             if hand["fistQuestionMark"] and hand2["fistQuestionMark"]:
@@ -89,47 +90,49 @@ with mp_hands.Hands(
                 if abs(delta_x) > minPan or abs(delta_y) > minPan:
                     print(f"Panned: dX={delta_x}, dY={delta_y}")
                 panningstate = "idle"
+                pan_just_released = True
             
-            for hand in hands:
-                if hand["handedness"] == "Right":
-                    if zoomingstate == "idle":
-                        cv2.circle(black, hand["thumbTip"], 15, (0, 255, 0), -1)
-                        cv2.circle(black, hand["indexTip"], 15, (0, 0, 255), -1)
-                        if hand["pDisdy"] < pinchThres:
-                            zoomingstate = "PINCHED"
-                            zoomstartpos = hand["pinchMid"]
-                            zoomcurrentpos = hand["pinchMid"]
-                    elif zoomingstate == "PINCHED":
-                        cv2.circle(black, hand["thumbTip"], 15, (0, 255, 255), -1)
-                        cv2.circle(black, hand["indexTip"], 15, (0, 255, 255), -1)
-                        if hand["pDisdy"] < pinchThres:
-                            zoomcurrentpos = hand["pinchMid"]
-                            cv2.line(black, zoomstartpos, zoomcurrentpos, (0, 255, 255), 3)
-                        else:
-                            delta_y = zoomstartpos[1] - zoomcurrentpos[1]
-                            if abs(delta_y) > minZoom:
-                                print(f"Zoom: {delta_y} pixels")
-                            zoomingstate = "idle"
+            if not pan_just_released:
+                for hand in hands:
+                    if hand["handedness"] == "Right":
+                        if zoomingstate == "idle":
+                            cv2.circle(black, hand["thumbTip"], 15, (0, 255, 0), -1)
+                            cv2.circle(black, hand["indexTip"], 15, (0, 0, 255), -1)
+                            if hand["pDisdy"] < pinchThres:
+                                zoomingstate = "PINCHED"
+                                zoomstartpos = hand["pinchMid"]
+                                zoomcurrentpos = hand["pinchMid"]
+                        elif zoomingstate == "PINCHED":
+                            cv2.circle(black, hand["thumbTip"], 15, (0, 255, 255), -1)
+                            cv2.circle(black, hand["indexTip"], 15, (0, 255, 255), -1)
+                            if hand["pDisdy"] < pinchThres:
+                                zoomcurrentpos = hand["pinchMid"]
+                                cv2.line(black, zoomstartpos, zoomcurrentpos, (0, 255, 255), 3)
+                            else:
+                                delta_y = zoomstartpos[1] - zoomcurrentpos[1]
+                                if abs(delta_y) > minZoom:
+                                    print(f"Zoom: {delta_y} pixels")
+                                zoomingstate = "idle"
 
-                elif hand["handedness"] == "Left":
-                    if rotatingstate == "idle":
-                        cv2.circle(black, hand["thumbTip"], 15, (0, 255, 0), -1)
-                        cv2.circle(black, hand["indexTip"], 15, (0, 0, 255), -1)
-                        if hand["pDisdy"] < pinchThres:
-                            rotatingstate = "PINCHED"
-                            rotatingstartpos = hand["pinchMid"]
-                            rotatingcurrentpos = hand["pinchMid"]
-                    elif rotatingstate == "PINCHED":
-                        cv2.circle(black, hand["thumbTip"], 15, (255, 255, 0), -1)
-                        cv2.circle(black, hand["indexTip"], 15, (255, 255, 0), -1)
-                        if hand["pDisdy"] < pinchThres:
-                            rotatingcurrentpos = hand["pinchMid"]
-                            cv2.line(black, rotatingstartpos, rotatingcurrentpos, (255, 255, 0), 3)
-                        else:
-                            delta_x = rotatingcurrentpos[0] - rotatingstartpos[0]
-                            if abs(delta_x) > minRot:
-                                print(f"Rotated: {delta_x} pixels")
-                            rotatingstate = "idle"
+                    elif hand["handedness"] == "Left":
+                        if rotatingstate == "idle":
+                            cv2.circle(black, hand["thumbTip"], 15, (0, 255, 0), -1)
+                            cv2.circle(black, hand["indexTip"], 15, (0, 0, 255), -1)
+                            if hand["pDisdy"] < pinchThres:
+                                rotatingstate = "PINCHED"
+                                rotatingstartpos = hand["pinchMid"]
+                                rotatingcurrentpos = hand["pinchMid"]
+                        elif rotatingstate == "PINCHED":
+                            cv2.circle(black, hand["thumbTip"], 15, (255, 255, 0), -1)
+                            cv2.circle(black, hand["indexTip"], 15, (255, 255, 0), -1)
+                            if hand["pDisdy"] < pinchThres:
+                                rotatingcurrentpos = hand["pinchMid"]
+                                cv2.line(black, rotatingstartpos, rotatingcurrentpos, (255, 255, 0), 3)
+                            else:
+                                delta_x = rotatingcurrentpos[0] - rotatingstartpos[0]
+                                if abs(delta_x) > minRot:
+                                    print(f"Rotated: {delta_x} pixels")
+                                rotatingstate = "idle"
         
         if not hands:
             zoomingstate = "idle"
