@@ -57,41 +57,89 @@ export default function ExplorePage() {
       mount.removeChild(renderer.domElement)
       window.removeEventListener('resize', handleResize)
     }
-  }, [])
+    }, [])
+    const planets = [
+        {
+          name: 'Sun',
+          textureUrl: '/textures/sun.jpg',
+          radius: 4,
+          position: [0, 0, 0] as [number, number, number],
+          rotationSpeed: 0.0005, 
+          orbitSpeed: 0,
+        },
+        {
+          name: 'Mercury',
+          textureUrl: '/textures/mercury.jpg',
+          radius: 0.4,
+          position: [6, 0, 0],
+          rotationSpeed: 0.00017, 
+          orbitSpeed: 0.0083, 
+        },
+        {
+          name: 'Venus',
+          textureUrl: '/textures/venus.jpg',
+          radius: 0.9,
+          position: [9, 0, 0],
+          rotationSpeed: -0.00004,
+          orbitSpeed: 0.0032, 
+        },
+        {
+          name: 'Earth',
+          textureUrl: '/textures/earth.jpg',
+          radius: 1,
+          position: [12, 0, 0],
+          rotationSpeed: 0.01,
+          orbitSpeed: 0.002, 
+        },
+        {
+          name: 'Mars',
+          textureUrl: '/textures/mars.jpg',
+          radius: 0.8,
+          position: [15, 0, 0],
+          rotationSpeed: 0.0098,
+          orbitSpeed: 0.0011,
+        },
+        {
+          name: 'Jupiter',
+          textureUrl: '/textures/jupiter.jpg',
+          radius: 2.5,
+          position: [20, 0, 0],
+          rotationSpeed: 0.024,
+          orbitSpeed: 0.00017,
+        },
+        {
+          name: 'Saturn',
+          textureUrl: '/textures/saturn.jpg',
+          radius: 2.2,
+          position: [27, 0, 0],
+          rotationSpeed: 0.022, 
+          orbitSpeed: 0.00007,
+        },
+        {
+          name: 'Uranus',
+          textureUrl: '/textures/uranus.jpg',
+          radius: 1.6,
+          position: [33, 0, 0],
+          rotationSpeed: -0.012, 
+          orbitSpeed: 0.00003,
+        },
+        {
+          name: 'Neptune',
+          textureUrl: '/textures/neptune.jpg',
+          radius: 1.5,
+          position: [38, 0, 0],
+          rotationSpeed: 0.009,
+          orbitSpeed: 0.00002,
+        },
+    ]
+
 
   return (
     <div ref={mountRef} className="h-screen w-screen bg-black overflow-hidden">
-      {scene && (
-        <>
-          <Planet
-            scene={scene}
-            name="Sun"
-            textureUrl="/textures/sun.jpg"
-            radius={2}
-            position={[0, 0, 0]}
-            emissive
-            rotationSpeed={0.002}
-          />
-          <Planet
-            scene={scene}
-            name="Mercury"
-            textureUrl="/textures/mercury.jpg"
-            radius={1}
-            position={[6, 0, 0]}
-            
-            rotationSpeed={0.01}
-          />
-          <Planet
-            scene={scene}
-            name="Earth"
-            textureUrl="/textures/earth.jpg"
-            radius={1}
-            position={[6, 0, 0]}
-            
-            rotationSpeed={0.01}
-          />
-        </>
-      )}
+      {scene &&
+        planets.map((planet) => (
+          <Planet key={planet.name} scene={scene} {...planet} emissive/>
+        ))}
     </div>
   )
 }
